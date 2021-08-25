@@ -1,0 +1,106 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://addons/mangadex-gd/screens/base_screen.tscn" type="PackedScene" id=1]
+[ext_resource path="res://addons/mangadex-gd/screens/login_screen.gd" type="Script" id=2]
+
+[node name="LoginScreen" instance=ExtResource( 1 )]
+script = ExtResource( 2 )
+username_input_path = NodePath("PanelContainer/VBoxContainer/UsernameContainer/LineEdit")
+password_input_path = NodePath("PanelContainer/VBoxContainer/PasswordContainer/LineEdit")
+remember_username_path = NodePath("PanelContainer/VBoxContainer/HBoxContainer/RememberUsername")
+remember_password_path = NodePath("PanelContainer/VBoxContainer/HBoxContainer/RememberPassword")
+login_button_path = NodePath("PanelContainer/VBoxContainer/LoginButton")
+
+[node name="PanelContainer" type="PanelContainer" parent="." index="0"]
+anchor_left = 0.3
+anchor_top = 0.5
+anchor_right = 0.7
+anchor_bottom = 0.9
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer" index="0"]
+margin_left = 10.0
+margin_top = 10.0
+margin_right = 630.0
+margin_bottom = 350.0
+
+[node name="UsernameContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer" index="0"]
+margin_right = 620.0
+margin_bottom = 24.0
+
+[node name="Label" type="Label" parent="PanelContainer/VBoxContainer/UsernameContainer" index="0"]
+margin_top = 5.0
+margin_right = 305.0
+margin_bottom = 19.0
+size_flags_horizontal = 3
+text = "Username:"
+
+[node name="LineEdit" type="LineEdit" parent="PanelContainer/VBoxContainer/UsernameContainer" index="1"]
+margin_left = 315.0
+margin_right = 620.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="PasswordContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer" index="1"]
+margin_top = 34.0
+margin_right = 620.0
+margin_bottom = 58.0
+
+[node name="Label" type="Label" parent="PanelContainer/VBoxContainer/PasswordContainer" index="0"]
+margin_top = 5.0
+margin_right = 305.0
+margin_bottom = 19.0
+size_flags_horizontal = 3
+text = "Password:"
+
+[node name="LineEdit" type="LineEdit" parent="PanelContainer/VBoxContainer/PasswordContainer" index="1"]
+margin_left = 315.0
+margin_right = 620.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+secret = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer" index="2"]
+margin_top = 68.0
+margin_right = 620.0
+margin_bottom = 94.0
+
+[node name="RememberUsername" type="CheckBox" parent="PanelContainer/VBoxContainer/HBoxContainer" index="0"]
+margin_right = 305.0
+margin_bottom = 26.0
+size_flags_horizontal = 3
+text = "Remember Username"
+
+[node name="RememberPassword" type="CheckBox" parent="PanelContainer/VBoxContainer/HBoxContainer" index="1"]
+margin_left = 315.0
+margin_right = 620.0
+margin_bottom = 26.0
+size_flags_horizontal = 3
+text = "Remember Password"
+
+[node name="LoginButton" type="Button" parent="PanelContainer/VBoxContainer" index="3"]
+margin_top = 316.0
+margin_right = 620.0
+margin_bottom = 340.0
+size_flags_vertical = 10
+text = "Login"
+
+[node name="DevToken" type="LineEdit" parent="PanelContainer/VBoxContainer" index="4"]
+visible = false
+margin_top = 282.0
+margin_right = 620.0
+margin_bottom = 306.0
+secret = true
+placeholder_text = "token"
+
+[node name="DevLogin" type="Button" parent="PanelContainer/VBoxContainer" index="5"]
+visible = false
+margin_top = 316.0
+margin_right = 620.0
+margin_bottom = 340.0
+size_flags_vertical = 0
+text = "Dev Login"

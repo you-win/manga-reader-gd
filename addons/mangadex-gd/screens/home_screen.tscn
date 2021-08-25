@@ -1,0 +1,62 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://addons/mangadex-gd/screens/base_screen.tscn" type="PackedScene" id=1]
+[ext_resource path="res://addons/mangadex-gd/screens/home_screen.gd" type="Script" id=2]
+
+[node name="HomeScreen" instance=ExtResource( 1 )]
+script = ExtResource( 2 )
+username_field_path = NodePath("PanelContainer/HBoxContainer/SidebarContainer/PanelContainer/HBoxContainer/UsernameLabel")
+
+[node name="PanelContainer" type="PanelContainer" parent="." index="0"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer" index="0"]
+margin_left = 10.0
+margin_top = 10.0
+margin_right = 1590.0
+margin_bottom = 890.0
+
+[node name="SidebarContainer" type="VBoxContainer" parent="PanelContainer/HBoxContainer" index="0"]
+margin_right = 312.0
+margin_bottom = 880.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.25
+
+[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/HBoxContainer/SidebarContainer" index="0"]
+margin_right = 312.0
+margin_bottom = 34.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/HBoxContainer/SidebarContainer/PanelContainer" index="0"]
+margin_left = 10.0
+margin_top = 10.0
+margin_right = 302.0
+margin_bottom = 24.0
+
+[node name="Label" type="Label" parent="PanelContainer/HBoxContainer/SidebarContainer/PanelContainer/HBoxContainer" index="0"]
+margin_right = 141.0
+margin_bottom = 14.0
+size_flags_horizontal = 3
+text = "Username:"
+
+[node name="UsernameLabel" type="Label" parent="PanelContainer/HBoxContainer/SidebarContainer/PanelContainer/HBoxContainer" index="1"]
+margin_left = 151.0
+margin_right = 292.0
+margin_bottom = 14.0
+size_flags_horizontal = 3
+
+[node name="HSplitContainer" type="HSplitContainer" parent="PanelContainer/HBoxContainer" index="1"]
+margin_left = 322.0
+margin_right = 322.0
+margin_bottom = 880.0
+
+[node name="MainView" type="VBoxContainer" parent="PanelContainer/HBoxContainer" index="2"]
+margin_left = 332.0
+margin_right = 1580.0
+margin_bottom = 880.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
