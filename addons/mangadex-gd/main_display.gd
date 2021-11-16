@@ -21,14 +21,8 @@ var current_screen: Control
 ###############################################################################
 
 func _ready() -> void:
-	print("starting!")
-	client_pool = load("res://addons/mangadex-gd/client_pool.gd").new()
-	client_pool.main = self
-	call_deferred("add_child", client_pool)
-	
-	current_screen = load("res://addons/mangadex-gd/screens/login_screen.tscn").instance()
-	current_screen.main = self
-	call_deferred("add_child", current_screen)
+	if not Engine.editor_hint:
+		setup()
 
 ###############################################################################
 # Connections                                                                 #
@@ -48,5 +42,15 @@ func change_screen_to(path: String) -> void:
 	yield(get_tree(), "idle_frame")
 	
 	current_screen = load(path).instance()
+	current_screen.main = self
+	call_deferred("add_child", current_screen)
+
+func setup() -> void:
+	print("starting!")
+	client_pool = load("res://addons/mangadex-gd/client_pool.gd").new()
+	client_pool.main = self
+	call_deferred("add_child", client_pool)
+	
+	current_screen = load("res://addons/mangadex-gd/screens/login_screen.tscn").instance()
 	current_screen.main = self
 	call_deferred("add_child", current_screen)

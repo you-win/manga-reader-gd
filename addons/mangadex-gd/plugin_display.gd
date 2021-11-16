@@ -10,6 +10,7 @@ var main: Node
 func _ready() -> void:
 	main = load("res://addons/mangadex-gd/main_display.tscn").instance()
 	add_child(main)
+	main.setup()
 
 func _exit_tree() -> void:
 	if main:
