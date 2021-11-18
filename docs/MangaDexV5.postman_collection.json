@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "28fc05ba-b870-477d-8f08-8276158e0af3",
+		"_postman_id": "92cd7d05-f72f-4dab-b124-47a736a68bd1",
 		"name": "MangaDexV5",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -135,7 +135,7 @@
 			]
 		},
 		{
-			"name": "ViewManga",
+			"name": "Manga",
 			"item": [
 				{
 					"name": "User followed feed",
@@ -157,12 +157,12 @@
 					"response": []
 				},
 				{
-					"name": "User followed feed en",
+					"name": "User followed feed ordered",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}user/follows/manga/feed?locales[]=en",
+							"raw": "{{baseUrl}}user/follows/manga/feed?limit=32&offset=0&translatedLanguage[]=en&includes[]=user&includes[]=scanlation_group&contentRating[]=safe&contentRating[]=suggestive&contentRating[]=erotica&order[createdAt]=desc",
 							"host": [
 								"{{baseUrl}}user"
 							],
@@ -173,8 +173,40 @@
 							],
 							"query": [
 								{
-									"key": "locales[]",
+									"key": "limit",
+									"value": "32"
+								},
+								{
+									"key": "offset",
+									"value": "0"
+								},
+								{
+									"key": "translatedLanguage[]",
 									"value": "en"
+								},
+								{
+									"key": "includes[]",
+									"value": "user"
+								},
+								{
+									"key": "includes[]",
+									"value": "scanlation_group"
+								},
+								{
+									"key": "contentRating[]",
+									"value": "safe"
+								},
+								{
+									"key": "contentRating[]",
+									"value": "suggestive"
+								},
+								{
+									"key": "contentRating[]",
+									"value": "erotica"
+								},
+								{
+									"key": "order[createdAt]",
+									"value": "desc"
 								}
 							]
 						}
@@ -286,6 +318,20 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Ping",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}ping",
+					"host": [
+						"{{baseUrl}}ping"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"auth": {
