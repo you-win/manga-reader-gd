@@ -6,6 +6,7 @@
 [node name="HomeScreen" instance=ExtResource( 1 )]
 script = ExtResource( 2 )
 username_field_path = NodePath("PanelContainer/HBoxContainer/SidebarContainer/PanelContainer/HBoxContainer/UsernameLabel")
+user_feed_path = NodePath("PanelContainer/HBoxContainer/MainView/UserFeedContainer/UserFeed")
 
 [node name="PanelContainer" type="PanelContainer" parent="." index="0"]
 anchor_right = 1.0
@@ -57,6 +58,18 @@ margin_bottom = 880.0
 [node name="MainView" type="VBoxContainer" parent="PanelContainer/HBoxContainer" index="2"]
 margin_left = 332.0
 margin_right = 1580.0
+margin_bottom = 880.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="UserFeedContainer" type="ScrollContainer" parent="PanelContainer/HBoxContainer/MainView" index="0"]
+margin_right = 1248.0
+margin_bottom = 880.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="UserFeed" type="VBoxContainer" parent="PanelContainer/HBoxContainer/MainView/UserFeedContainer" index="0"]
+margin_right = 1248.0
 margin_bottom = 880.0
 size_flags_horizontal = 3
 size_flags_vertical = 3

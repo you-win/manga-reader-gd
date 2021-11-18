@@ -14,7 +14,7 @@ func _ready() -> void:
 # Connections                                                                 #
 ###############################################################################
 
-func _handle_response(_request_type: int, _response_status: int, _response_body: Dictionary) -> void:
+func _handle_response(_request_type: int, _response_status: int, _response_body) -> void:
 	print_debug("_handle_response not implemented", true)
 
 ###############################################################################

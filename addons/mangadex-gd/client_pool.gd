@@ -32,7 +32,7 @@ func _ready() -> void:
 # Connections                                                                 #
 ###############################################################################
 
-func _on_client_ready_to_read(request_type: int, response_code: int, response_body: Dictionary) -> void:
+func _on_client_ready_to_read(request_type: int, response_code: int, response_body) -> void:
 	emit_signal("response_received", request_type, response_code, response_body)
 
 ###############################################################################

@@ -35,7 +35,7 @@ func _ready() -> void:
 # Connections                                                                 #
 ###############################################################################
 
-func _handle_response(request_type: int, response_status: int, response_body: Dictionary) -> void:
+func _handle_response(request_type: int, response_status: int, response_body) -> void:
 	match request_type:
 		main.RequestType.PING:
 			if response_status != 200:

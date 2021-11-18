@@ -30,7 +30,7 @@ func _ready() -> void:
 # Connections                                                                 #
 ###############################################################################
 
-func _on_request_completed(_result: int, response_code: int, _headers: PoolStringArray,
+func _on_request_completed(_result: int, response_code: int, headers: PoolStringArray,
 		body: PoolByteArray) -> void:
 	if not response_code in VALID_RESPONSE_CODES:
 		print_debug("Response code %s is not a valid status code" % response_code, true)
@@ -39,17 +39,23 @@ func _on_request_completed(_result: int, response_code: int, _headers: PoolStrin
 		emit_signal("ready_to_read", last_request_type, response_code, {})
 		return
 	
-	var parsed_body: Dictionary = {}
+	var parsed_body
 	if not body.empty():
-		var body_string := body.get_string_from_utf8()
-		if body_string == PONG:
-			parsed_body["ping"] = body_string
-		else:
-			var parsed_json = parse_json(body_string)
-			if not typeof(parsed_json) == TYPE_DICTIONARY:
-				parsed_body["text"] = body_string
+		if last_request_type != main.RequestType.GET_MANGA_PAGE:
+			parsed_body = {}
+			var body_string := body.get_string_from_utf8()
+			if body_string == PONG:
+				parsed_body["ping"] = body_string
 			else:
-				parsed_body = parsed_json
+				var parsed_json = parse_json(body_string)
+				if not typeof(parsed_json) == TYPE_DICTIONARY:
+					parsed_body["text"] = body_string
+				else:
+					parsed_body = parsed_json
+		else:
+			parsed_body = body
+	else:
+		parsed_body = {}
 	
 	is_ready_for_new_request = true
 	emit_signal("ready_to_read", last_request_type, response_code, parsed_body)
@@ -70,6 +76,17 @@ func _send_request(method: int, path: String, data: String = "",
 func _construct_bearer_header() -> PoolStringArray:
 	var bearer: String = "Authorization: Bearer %s" % get_parent().token
 	return PoolStringArray([bearer, CONTENT_TYPE, USER_AGENT, ACCEPT_ALL])
+
+func _find_content_type_header_value(headers: PoolStringArray) -> String:
+	var result: String = ""
+	print_debug(headers)
+	for header in headers:
+		var split_header: PoolStringArray = header.split(" ")
+		print_debug(split_header[1])
+		if split_header[0] == "Content-Type:":
+			return split_header[split_header.size() - 1]
+
+	return result
 
 ###############################################################################
 # Public functions                                                            #
@@ -112,9 +129,15 @@ func get_user_feed(language: String, offset: int = 0) -> void:
 	print_debug("Getting user feed for lang %s" % language)
 	last_request_type = main.RequestType.USER_FEED
 	
+	# var err: int = _send_request(HTTPClient.METHOD_GET,
+	# 	"user/follows/manga/feed?limit=10&locales[]=%s&offset=%s" % [language, offset], "",
+	# 	_construct_bearer_header())
+
 	var err: int = _send_request(HTTPClient.METHOD_GET,
-		"user/follows/manga/feed?limit=10&locales[]=%s&offset=%s" % [language, offset], "",
-		_construct_bearer_header())
+		"user/follows/manga/feed?limit=32&offset=%s&translatedLanguage[]=%s&includes[]=user&includes[]=scanlation_group&contentRating[]=safe&contentRating[]=suggestive&contentRating[]=erotica&order[createdAt]=desc" % [offset, language],
+		"",
+		_construct_bearer_header()
+	)
 	
 	_check_error(err)
 
@@ -145,4 +168,38 @@ func get_chapter(chapter_id: String) -> void:
 	var err: int = _send_request(HTTPClient.METHOD_GET, "chapter/%s" % chapter_id, "",
 			_construct_bearer_header())
 	
+	_check_error(err)
+
+# MDaH
+
+func get_mdah_server(chapter_id: String) -> void:
+	print_debug("Getting MDaH server %s" % chapter_id)
+	last_request_type = main.RequestType.GET_MDAH_SERVER
+
+	var err: int = _send_request(HTTPClient.METHOD_GET, "at-home/server/%s" % chapter_id,
+		"", _construct_bearer_header())
+
+	_check_error(err)
+
+# Get manga page
+
+func get_manga_page(mdah_server: String, chapter_hash: String, chapter_page_id: String) -> void:
+	print_debug("Getting page from mdah server %s" % chapter_page_id)
+	last_request_type = main.RequestType.GET_MANGA_PAGE
+	
+	is_ready_for_new_request = false
+	
+	var headers: PoolStringArray = _construct_bearer_header()
+	headers.append("Accept-Encoding: gzip, deflate, br")
+	headers.append("Connection: keep-alive")
+	headers.append("Host: %s:444" % mdah_server)
+	
+	var err: int = request(
+		"%s%s" % [mdah_server, "/data/%s/%s" % [chapter_hash, chapter_page_id]],
+		headers,
+		true,
+		HTTPClient.METHOD_GET,
+		""
+	)
+
 	_check_error(err)

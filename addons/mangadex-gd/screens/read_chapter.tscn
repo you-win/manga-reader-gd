@@ -1,0 +1,93 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://addons/mangadex-gd/screens/base_screen.tscn" type="PackedScene" id=1]
+[ext_resource path="res://addons/mangadex-gd/screens/read_chapter.gd" type="Script" id=2]
+
+[sub_resource type="StyleBoxEmpty" id=1]
+
+[sub_resource type="StyleBoxEmpty" id=2]
+
+[sub_resource type="StyleBoxEmpty" id=3]
+
+[sub_resource type="StyleBoxEmpty" id=4]
+
+[sub_resource type="StyleBoxEmpty" id=5]
+
+[node name="ReadChapter" instance=ExtResource( 1 )]
+script = ExtResource( 2 )
+scroll_container_path = NodePath("PanelContainer/ScrollContainer")
+manga_page_path = NodePath("PanelContainer/ScrollContainer/MangaPage")
+left_button_path = NodePath("HBoxContainer/Left")
+middle_button_path = NodePath("HBoxContainer/Middle")
+right_button_path = NodePath("HBoxContainer/Right")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="." index="0"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Left" type="Button" parent="HBoxContainer" index="0"]
+margin_right = 526.0
+margin_bottom = 900.0
+focus_mode = 0
+mouse_filter = 1
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_styles/hover = SubResource( 1 )
+custom_styles/pressed = SubResource( 2 )
+custom_styles/focus = SubResource( 3 )
+custom_styles/disabled = SubResource( 4 )
+custom_styles/normal = SubResource( 5 )
+
+[node name="Middle" type="Button" parent="HBoxContainer" index="1"]
+margin_left = 536.0
+margin_right = 1063.0
+margin_bottom = 900.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_styles/hover = SubResource( 1 )
+custom_styles/pressed = SubResource( 2 )
+custom_styles/focus = SubResource( 3 )
+custom_styles/disabled = SubResource( 4 )
+custom_styles/normal = SubResource( 5 )
+
+[node name="Right" type="Button" parent="HBoxContainer" index="2"]
+margin_left = 1073.0
+margin_right = 1600.0
+margin_bottom = 900.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_styles/hover = SubResource( 1 )
+custom_styles/pressed = SubResource( 2 )
+custom_styles/focus = SubResource( 3 )
+custom_styles/disabled = SubResource( 4 )
+custom_styles/normal = SubResource( 5 )
+
+[node name="PanelContainer" type="PanelContainer" parent="." index="1"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 10.0
+margin_top = 10.0
+margin_right = -10.0
+margin_bottom = -10.0
+mouse_filter = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ScrollContainer" type="ScrollContainer" parent="PanelContainer" index="0"]
+margin_left = 10.0
+margin_top = 10.0
+margin_right = 1570.0
+margin_bottom = 870.0
+mouse_filter = 2
+
+[node name="MangaPage" type="TextureRect" parent="PanelContainer/ScrollContainer" index="2"]
+margin_right = 1560.0
+margin_bottom = 860.0
+mouse_filter = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+stretch_mode = 4
