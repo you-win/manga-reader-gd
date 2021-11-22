@@ -1,5 +1,5 @@
 tool
-extends "res://addons/mangadex-gd/screens/base_screen.gd"
+extends "res://addons/manga-reader-gd/screens/base_screen.gd"
 
 export var scroll_container_path: NodePath
 export var manga_page_path: NodePath

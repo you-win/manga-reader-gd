@@ -10,9 +10,9 @@ config_version=4
 
 [application]
 
-config/name="Mangadex GD RE"
-run/main_scene="res://addons/mangadex-gd/main_display.tscn"
-config/icon="res://addons/mangadex-gd/assets/icon.png"
+config/name="Manga Reader GD"
+run/main_scene="res://addons/manga-reader-gd/main_display.tscn"
+config/icon="res://addons/manga-reader-gd/assets/icon.png"
 
 [display]
 
@@ -28,4 +28,4 @@ common/enable_pause_aware_picking=true
 quality/driver/driver_name="GLES2"
 vram_compression/import_etc=true
 vram_compression/import_etc2=false
-environment/default_environment="res://addons/mangadex-gd/assets/default_env.tres"
+environment/default_environment="res://addons/manga-reader-gd/assets/default_env.tres"

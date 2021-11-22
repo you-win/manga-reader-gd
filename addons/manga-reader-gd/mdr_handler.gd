@@ -128,10 +128,6 @@ func get_user_data() -> void:
 func get_user_feed(language: String, offset: int = 0) -> void:
 	print_debug("Getting user feed for lang %s" % language)
 	last_request_type = main.RequestType.USER_FEED
-	
-	# var err: int = _send_request(HTTPClient.METHOD_GET,
-	# 	"user/follows/manga/feed?limit=10&locales[]=%s&offset=%s" % [language, offset], "",
-	# 	_construct_bearer_header())
 
 	var err: int = _send_request(HTTPClient.METHOD_GET,
 		"user/follows/manga/feed?limit=32&offset=%s&translatedLanguage[]=%s&includes[]=user&includes[]=scanlation_group&contentRating[]=safe&contentRating[]=suggestive&contentRating[]=erotica&order[createdAt]=desc" % [offset, language],
@@ -152,9 +148,24 @@ func get_user_followed_manga(offset: int, limit: int) -> void:
 	
 	_check_error(err)
 
-func get_manga(manga_id: String) -> void:
-	print_debug("Getting manga for id %s" % manga_id)
+func get_manga(ids: Array) -> void:
+	print_debug("Getting manga ids")
 	last_request_type = main.RequestType.GET_MANGA
+
+	if ids.empty():
+		print_debug("ids array is empty, cannot get manga")
+		return
+	var ids_copy: Array = ids.duplicate()
+	var query_param: String = "limit=100&ids[]="
+	var params: String = "%s%s" % [query_param, ids_copy.pop_back()]
+	for id_idx in ids_copy.size():
+		params = "%s&%s%s" % [params, query_param, ids_copy.pop_back()]
+
+	var err: int = _send_request(HTTPClient.METHOD_GET, "manga?%s" % params, "", _construct_bearer_header())
+
+func view_manga(manga_id: String) -> void:
+	print_debug("Getting manga for id %s" % manga_id)
+	last_request_type = main.RequestType.VIEW_MANGA
 	
 	var err: int = _send_request(HTTPClient.METHOD_GET, "manga/%s" % manga_id, "",
 			_construct_bearer_header())
@@ -192,7 +203,7 @@ func get_manga_page(mdah_server: String, chapter_hash: String, chapter_page_id: 
 	var headers: PoolStringArray = _construct_bearer_header()
 	headers.append("Accept-Encoding: gzip, deflate, br")
 	headers.append("Connection: keep-alive")
-	headers.append("Host: %s:444" % mdah_server)
+	# headers.append("Host: %s:444" % mdah_server)
 	
 	var err: int = request(
 		"%s%s" % [mdah_server, "/data/%s/%s" % [chapter_hash, chapter_page_id]],

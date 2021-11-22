@@ -1,7 +1,8 @@
 tool
-extends "res://addons/mangadex-gd/screens/base_screen.gd"
+extends "res://addons/manga-reader-gd/screens/base_screen.gd"
 
 const SERVER_UNAVAILABLE := "Server unavailable"
+const HOME_SCREEN_PATH: String = "res://addons/manga-reader-gd/screens/home_screen.tscn"
 
 export var username_input_path: NodePath
 export var password_input_path: NodePath
@@ -47,7 +48,7 @@ func _handle_response(request_type: int, response_status: int, response_body) ->
 				return
 			main.client_pool.token = response_body["token"]["session"]
 			main.client_pool.refresh = response_body["token"]["refresh"]
-			main.change_screen_to("res://addons/mangadex-gd/screens/home_screen.tscn")
+			main.change_screen_to(HOME_SCREEN_PATH)
 
 func _on_login_button_pressed() -> void:
 	if (not _username_input.text.empty() and not _password_input.text.empty()):
@@ -56,7 +57,7 @@ func _on_login_button_pressed() -> void:
 
 func _on_dev_login() -> void:
 	main.client_pool.token = find_node("DevToken").text
-	main.change_screen_to("res://addons/mangadex-gd/screens/home_screen.tscn")
+	main.change_screen_to(HOME_SCREEN_PATH)
 
 ###############################################################################
 # Private functions                                                           #

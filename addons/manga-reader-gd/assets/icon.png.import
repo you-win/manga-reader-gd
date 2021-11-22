@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/icon.png-38e6ee52ac89e8970044f3725ae3c240.stex"
+path="res://.import/icon.png-248b701fb147d6354531e681c31f160e.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/mangadex-gd/assets/icon.png"
-dest_files=[ "res://.import/icon.png-38e6ee52ac89e8970044f3725ae3c240.stex" ]
+source_file="res://addons/manga-reader-gd/assets/icon.png"
+dest_files=[ "res://.import/icon.png-248b701fb147d6354531e681c31f160e.stex" ]
 
 [params]
 

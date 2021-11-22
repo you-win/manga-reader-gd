@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=2]
 
-[ext_resource path="res://addons/mangadex-gd/screens/base_screen.tscn" type="PackedScene" id=1]
-[ext_resource path="res://addons/mangadex-gd/screens/read_chapter.gd" type="Script" id=2]
+[ext_resource path="res://addons/manga-reader-gd/screens/read_chapter.gd" type="Script" id=1]
+[ext_resource path="res://addons/manga-reader-gd/screens/base_screen.tscn" type="PackedScene" id=2]
 
 [sub_resource type="StyleBoxEmpty" id=1]
 
@@ -13,8 +13,8 @@
 
 [sub_resource type="StyleBoxEmpty" id=5]
 
-[node name="ReadChapter" instance=ExtResource( 1 )]
-script = ExtResource( 2 )
+[node name="ReadChapter" instance=ExtResource( 2 )]
+script = ExtResource( 1 )
 scroll_container_path = NodePath("PanelContainer/ScrollContainer")
 manga_page_path = NodePath("PanelContainer/ScrollContainer/MangaPage")
 left_button_path = NodePath("HBoxContainer/Left")

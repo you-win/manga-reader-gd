@@ -6,7 +6,7 @@ signal response_received(request_type, response_code, response_body)
 const MAX_CLIENTS: int = 10
 const INITIAL_CLIENTS: int = 4
 
-const MDR_HANDLER_PATH := "res://addons/mangadex-gd/mdr_handler.gd"
+const MDR_HANDLER_PATH := "res://addons/manga-reader-gd/mdr_handler.gd"
 
 var main: Node
 
@@ -47,11 +47,13 @@ func get_next_available_client() -> Node:
 	# Reuse existing client
 	for client in clients:
 		if client.is_ready_for_new_request:
+			print_debug("Getting existing client %s" % client.name)
 			yield(get_tree(), "idle_frame")
 			return client
 	
 	# Create a new client if necessary and possible
 	if clients.size() < MAX_CLIENTS:
+		print_debug("Creating new client")
 		var mdr_handler = load(MDR_HANDLER_PATH).new()
 		mdr_handler.main = main
 		clients.append(mdr_handler)
@@ -61,5 +63,6 @@ func get_next_available_client() -> Node:
 		return mdr_handler
 	
 	# Wait until a client is free
+	print_debug("Waiting for client to be available")
 	yield(get_tree().create_timer(3.0), "timeout")
 	return yield(get_next_available_client(), "completed")

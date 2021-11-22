@@ -1,0 +1,43 @@
+[gd_scene load_steps=3 format=2]
+
+[sub_resource type="StyleBoxEmpty" id=1]
+
+[sub_resource type="StyleBoxEmpty" id=2]
+content_margin_left = 5.0
+content_margin_right = 5.0
+content_margin_top = 5.0
+content_margin_bottom = 5.0
+
+[node name="AutowrapButton" type="PanelContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_styles/panel = SubResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Button" type="Button" parent="."]
+margin_right = 1600.0
+margin_bottom = 900.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+margin_right = 1600.0
+margin_bottom = 900.0
+mouse_filter = 2
+custom_styles/panel = SubResource( 2 )
+
+[node name="Label" type="Label" parent="PanelContainer"]
+margin_left = 5.0
+margin_top = 443.0
+margin_right = 1595.0
+margin_bottom = 457.0
+size_flags_horizontal = 3
+autowrap = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
