@@ -1,15 +1,26 @@
 tool
 extends "res://addons/manga-reader-gd/screens/base_screen.gd"
 
-const READ_CHAPTER_SCENE: PackedScene = preload("res://addons/manga-reader-gd/screens/read_chapter.tscn")
+const LOGIN_SCREEN_PATH: String = "res://addons/manga-reader-gd/screens/login_screen.tscn"
+const READ_CHAPTER_PATH: String = "res://addons/manga-reader-gd/screens/read_chapter.tscn"
 
 const AUTOWRAP_BUTTON: PackedScene = preload("res://addons/manga-reader-gd/autowrap_button.tscn")
 
+# Top bar
+export var logout_button_path: NodePath
+export var search_bar_path: NodePath
+export var refresh_button_path: NodePath
+
+onready var logout_button: Button = get_node(logout_button_path) as Button
+onready var search_bar: LineEdit = get_node(search_bar_path) as LineEdit
+onready var refresh_button: Button = get_node(refresh_button_path) as Button
+
+# User data
 export var username_field_path: NodePath
 export var user_feed_path: NodePath
 
-onready var username_field: Label = get_node(username_field_path)
-onready var user_feed: VBoxContainer = get_node(user_feed_path)
+onready var username_field: Label = get_node(username_field_path) as Label
+onready var user_feed: VBoxContainer = get_node(user_feed_path) as VBoxContainer
 
 var chapter_data: Dictionary = {} # {string: [{}]}
 
@@ -18,11 +29,11 @@ var chapter_data: Dictionary = {} # {string: [{}]}
 ###############################################################################
 
 func _ready() -> void:
-	var user_data_client = yield(main.client_pool.get_next_available_client(), "completed")
-	user_data_client.get_user_data()
+	logout_button.connect("pressed", self, "_on_logout")
+	search_bar.connect("text_entered", self, "_on_search_bar_enter_pressed")
+	refresh_button.connect("pressed", self, "_on_refresh")
 
-	var user_feed_client = yield(main.client_pool.get_next_available_client(), "completed")
-	user_feed_client.get_user_feed("en", 0) # TODO hardcoded values
+	_get_data()
 
 ###############################################################################
 # Connections                                                                 #
@@ -51,6 +62,8 @@ func _handle_response(request_type: int, response_status: int, response_body) ->
 						chapter_data[id].append(data)
 						break
 
+			# User feed data only contains chapter information
+			# We find manga information in a separate request
 			var client = yield(main.client_pool.get_next_available_client(), "completed")
 			client.get_manga(chapter_data.keys())
 		main.RequestType.GET_MANGA:
@@ -84,19 +97,37 @@ func _handle_response(request_type: int, response_status: int, response_body) ->
 #					button.add_child(label)
 
 func _on_read_chapter(data: Dictionary) -> void:
-	var read_chapter_screen = READ_CHAPTER_SCENE.instance()
+	var read_chapter_screen = load(READ_CHAPTER_PATH).instance()
 	read_chapter_screen.chapter_id = data["id"]
 	read_chapter_screen.chapter_hash = data["attributes"]["hash"]
 	read_chapter_screen.chapter_page_ids = data["attributes"]["data"]
 	
 	main.change_screen(read_chapter_screen)
 
+func _on_logout() -> void:
+	main.change_screen(LOGIN_SCREEN_PATH)
+
+func _on_search_bar_enter_pressed(text: String) -> void:
+	
+	pass
+
+func _on_refresh() -> void:
+	for child in user_feed.get_children():
+		child.free()
+	chapter_data.clear()
+	_get_data()
+
 ###############################################################################
 # Private functions                                                           #
 ###############################################################################
 
+func _get_data() -> void:
+	var user_data_client = yield(main.client_pool.get_next_available_client(), "completed")
+	user_data_client.get_user_data()
+
+	var user_feed_client = yield(main.client_pool.get_next_available_client(), "completed")
+	user_feed_client.get_user_feed("en", 0) # TODO hardcoded values
+
 ###############################################################################
 # Public functions                                                            #
 ###############################################################################
-
-

@@ -22,6 +22,32 @@ enum RequestType {
 const CLIENT_POOL: Resource = preload("res://addons/manga-reader-gd/client_pool.gd")
 const LOGIN_SCREEN: PackedScene = preload("res://addons/manga-reader-gd/screens/login_screen.tscn")
 
+class LFU:
+	const LFU_MAX: int = 50
+	
+	var lfu: Dictionary # String: PoolByteArray
+
+	func _init() -> void:
+		lfu = {}
+
+	func find(key: String):
+		var result = lfu.get(key)
+		if result:
+			lfu.erase(key)
+			lfu[key] = result
+			return result
+			
+		return null
+	
+	func add(key: String, data) -> void:
+		lfu[key] = data
+		
+		if lfu.size() > LFU_MAX:
+			lfu.erase(lfu.keys()[0])
+
+var image_lfu: LFU
+var request_lfu: LFU
+
 var client_pool: Node
 
 var current_screen: Control
@@ -46,22 +72,21 @@ func _ready() -> void:
 # Public functions                                                            #
 ###############################################################################
 
-func change_screen_to(path: String) -> void:
+func change_screen(screen) -> void:
 	current_screen.queue_free()
-	
+
 	yield(get_tree(), "idle_frame")
 	
-	current_screen = load(path).instance()
+	match typeof(screen):
+		TYPE_OBJECT:
+			current_screen = screen
+		TYPE_STRING:
+			current_screen = load(screen).instance()
+		_:
+			print_debug("Tried to change screen to unhandled type")
+
 	current_screen.main = self
 	call_deferred("add_child", current_screen)
-
-func change_screen(screen: Node) -> void:
-	current_screen.queue_free()
-
-	yield(get_tree(), "idle_frame")
-
-	screen.main = self
-	call_deferred("add_child", screen)
 
 func setup() -> void:
 	print("starting!")
@@ -72,3 +97,6 @@ func setup() -> void:
 	current_screen = LOGIN_SCREEN.instance()
 	current_screen.main = self
 	call_deferred("add_child", current_screen)
+
+	image_lfu = LFU.new()
+	request_lfu = LFU.new()

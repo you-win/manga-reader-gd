@@ -1,20 +1,37 @@
 tool
 extends "res://addons/manga-reader-gd/screens/base_screen.gd"
 
+const HOME_SCREEN_PATH: String = "res://addons/manga-reader-gd/screens/home_screen.tscn"
+
+# MangaContainer
 export var scroll_container_path: NodePath
 export var manga_page_path: NodePath
+
+onready var scroll_container: ScrollContainer = get_node(scroll_container_path) as ScrollContainer
+onready var manga_page: TextureRect = get_node(manga_page_path) as TextureRect
+
+onready var v_scroll: VScrollBar = scroll_container.get_v_scrollbar()
+onready var h_scroll: HScrollBar = scroll_container.get_h_scrollbar()
+
+# Controls
 export var left_button_path: NodePath
 export var middle_button_path: NodePath
 export var right_button_path: NodePath
 
-onready var scroll_container: ScrollContainer = get_node(scroll_container_path) as ScrollContainer
-onready var manga_page: TextureRect = get_node(manga_page_path) as TextureRect
 onready var left_button: Button = get_node(left_button_path) as Button
 onready var middle_button: Button = get_node(middle_button_path) as Button
 onready var right_button: Button = get_node(right_button_path) as Button
 
-onready var v_scroll: VScrollBar = scroll_container.get_v_scrollbar()
-onready var h_scroll: HScrollBar = scroll_container.get_h_scrollbar()
+# TopBar
+export var options_container_path: NodePath
+export var hide_options_button_path: NodePath
+export var back_button_path: NodePath
+export var refresh_button_path: NodePath
+
+onready var options_container: Control = get_node(options_container_path) as Control
+onready var hide_options_button: Button = get_node(hide_options_button_path) as Button
+onready var back_button: Button = get_node(back_button_path) as Button
+onready var refresh_button: Button = get_node(refresh_button_path) as Button
 
 var chapter_id: String
 var chapter_hash: String
@@ -33,6 +50,12 @@ func _ready() -> void:
 	middle_button.connect("pressed", self, "_on_middle")
 	right_button.connect("pressed", self, "_on_right")
 	
+	hide_options_button.connect("pressed", self, "_on_hide_options")
+	back_button.connect("pressed", self, "_on_back")
+	refresh_button.connect("pressed", self, "_on_refresh")
+	
+	options_container.hide()
+	
 	var mdah_server_client = yield(main.client_pool.get_next_available_client(), "completed")
 	mdah_server_client.get_mdah_server(chapter_id)
 
@@ -43,6 +66,8 @@ func _input(event: InputEvent):
 				scroll_container.scroll_vertical = clamp(scroll_container.scroll_vertical - 20.0, 0.0, v_scroll.max_value)
 			BUTTON_WHEEL_DOWN:
 				scroll_container.scroll_vertical = clamp(scroll_container.scroll_vertical + 20.0, 0.0, v_scroll.max_value)
+			_:
+				pass
 
 ###############################################################################
 # Connections                                                                 #
@@ -82,14 +107,24 @@ func _on_left() -> void:
 	get_manga_page_client.get_manga_page(mdah_server, chapter_hash, chapter_page_ids[current_page_index])
 
 func _on_middle() -> void:
-	# TODO stub
-	pass
+	options_container.show()
 
 func _on_right() -> void:
 	current_page_index += 1
 	if current_page_index >= chapter_page_ids.size():
 		current_page_index -= 1
 		return
+	var get_manga_page_client = yield(main.client_pool.get_next_available_client(), "completed")
+	get_manga_page_client.get_manga_page(mdah_server, chapter_hash, chapter_page_ids[current_page_index])
+
+func _on_hide_options() -> void:
+	options_container.hide()
+
+func _on_back() -> void:
+	# TODO hardcoded to homescreen for now
+	main.change_screen(HOME_SCREEN_PATH)
+
+func _on_refresh() -> void:
 	var get_manga_page_client = yield(main.client_pool.get_next_available_client(), "completed")
 	get_manga_page_client.get_manga_page(mdah_server, chapter_hash, chapter_page_ids[current_page_index])
 

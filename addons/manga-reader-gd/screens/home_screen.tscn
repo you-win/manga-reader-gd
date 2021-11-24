@@ -5,8 +5,11 @@
 
 [node name="HomeScreen" instance=ExtResource( 1 )]
 script = ExtResource( 2 )
-username_field_path = NodePath("PanelContainer/HBoxContainer/SidebarContainer/PanelContainer/HBoxContainer/UsernameLabel")
-user_feed_path = NodePath("PanelContainer/HBoxContainer/MainView/UserFeedContainer/UserFeed")
+logout_button_path = NodePath("PanelContainer/VBoxContainer/TopBarContainer/LogoutButton")
+search_bar_path = NodePath("PanelContainer/VBoxContainer/TopBarContainer/PanelContainer/HBoxContainer/LineEdit")
+refresh_button_path = NodePath("PanelContainer/VBoxContainer/TopBarContainer/RefreshButton")
+username_field_path = NodePath("PanelContainer/VBoxContainer/HBoxContainer/SidebarContainer/PanelContainer/HBoxContainer/UsernameLabel")
+user_feed_path = NodePath("PanelContainer/VBoxContainer/HBoxContainer/MainView/UserFeedContainer/UserFeed")
 
 [node name="PanelContainer" type="PanelContainer" parent="." index="0"]
 anchor_right = 1.0
@@ -15,61 +18,116 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer" index="0"]
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer" index="0"]
 margin_left = 10.0
 margin_top = 10.0
 margin_right = 1590.0
 margin_bottom = 890.0
 
-[node name="SidebarContainer" type="VBoxContainer" parent="PanelContainer/HBoxContainer" index="0"]
-margin_right = 312.0
-margin_bottom = 880.0
+[node name="TopBarContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer" index="0"]
+margin_right = 1580.0
+margin_bottom = 44.0
+
+[node name="LogoutButton" type="Button" parent="PanelContainer/VBoxContainer/TopBarContainer" index="0"]
+margin_right = 520.0
+margin_bottom = 44.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
-size_flags_stretch_ratio = 0.25
+text = "Logout"
 
-[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/HBoxContainer/SidebarContainer" index="0"]
-margin_right = 312.0
-margin_bottom = 34.0
+[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/TopBarContainer" index="1"]
+margin_left = 530.0
+margin_right = 1050.0
+margin_bottom = 44.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
-[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/HBoxContainer/SidebarContainer/PanelContainer" index="0"]
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/TopBarContainer/PanelContainer" index="0"]
 margin_left = 10.0
 margin_top = 10.0
-margin_right = 302.0
+margin_right = 510.0
+margin_bottom = 34.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="PanelContainer/VBoxContainer/TopBarContainer/PanelContainer/HBoxContainer" index="0"]
+margin_top = 5.0
+margin_right = 46.0
+margin_bottom = 19.0
+size_flags_vertical = 6
+text = "Search:"
+
+[node name="LineEdit" type="LineEdit" parent="PanelContainer/VBoxContainer/TopBarContainer/PanelContainer/HBoxContainer" index="1"]
+margin_left = 56.0
+margin_right = 500.0
 margin_bottom = 24.0
-
-[node name="Label" type="Label" parent="PanelContainer/HBoxContainer/SidebarContainer/PanelContainer/HBoxContainer" index="0"]
-margin_right = 141.0
-margin_bottom = 14.0
 size_flags_horizontal = 3
-text = "Username:"
+size_flags_vertical = 3
 
-[node name="UsernameLabel" type="Label" parent="PanelContainer/HBoxContainer/SidebarContainer/PanelContainer/HBoxContainer" index="1"]
-margin_left = 151.0
-margin_right = 292.0
-margin_bottom = 14.0
+[node name="RefreshButton" type="Button" parent="PanelContainer/VBoxContainer/TopBarContainer" index="2"]
+margin_left = 1060.0
+margin_right = 1580.0
+margin_bottom = 44.0
 size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Refresh"
 
-[node name="HSplitContainer" type="HSplitContainer" parent="PanelContainer/HBoxContainer" index="1"]
-margin_left = 322.0
-margin_right = 322.0
-margin_bottom = 880.0
-
-[node name="MainView" type="VBoxContainer" parent="PanelContainer/HBoxContainer" index="2"]
-margin_left = 332.0
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer" index="1"]
+margin_top = 54.0
 margin_right = 1580.0
 margin_bottom = 880.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="UserFeedContainer" type="ScrollContainer" parent="PanelContainer/HBoxContainer/MainView" index="0"]
-margin_right = 1248.0
-margin_bottom = 880.0
+[node name="SidebarContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/HBoxContainer" index="0"]
+margin_right = 312.0
+margin_bottom = 826.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.25
+
+[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/SidebarContainer" index="0"]
+margin_right = 312.0
+margin_bottom = 34.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/SidebarContainer/PanelContainer" index="0"]
+margin_left = 10.0
+margin_top = 10.0
+margin_right = 302.0
+margin_bottom = 24.0
+
+[node name="Label" type="Label" parent="PanelContainer/VBoxContainer/HBoxContainer/SidebarContainer/PanelContainer/HBoxContainer" index="0"]
+margin_right = 141.0
+margin_bottom = 14.0
+size_flags_horizontal = 3
+text = "Username:"
+
+[node name="UsernameLabel" type="Label" parent="PanelContainer/VBoxContainer/HBoxContainer/SidebarContainer/PanelContainer/HBoxContainer" index="1"]
+margin_left = 151.0
+margin_right = 292.0
+margin_bottom = 14.0
+size_flags_horizontal = 3
+
+[node name="HSplitContainer" type="HSplitContainer" parent="PanelContainer/VBoxContainer/HBoxContainer" index="1"]
+margin_left = 322.0
+margin_right = 322.0
+margin_bottom = 826.0
+
+[node name="MainView" type="VBoxContainer" parent="PanelContainer/VBoxContainer/HBoxContainer" index="2"]
+margin_left = 332.0
+margin_right = 1580.0
+margin_bottom = 826.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="UserFeed" type="VBoxContainer" parent="PanelContainer/HBoxContainer/MainView/UserFeedContainer" index="0"]
+[node name="UserFeedContainer" type="ScrollContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/MainView" index="0"]
 margin_right = 1248.0
-margin_bottom = 880.0
+margin_bottom = 826.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="UserFeed" type="VBoxContainer" parent="PanelContainer/VBoxContainer/HBoxContainer/MainView/UserFeedContainer" index="0"]
+margin_right = 1248.0
+margin_bottom = 826.0
 size_flags_horizontal = 3
 size_flags_vertical = 3

@@ -16,6 +16,9 @@ const PONG := "pong"
 var main: Node
 
 var last_request_type: int = 0
+var last_request_uri: String = ""
+
+var force_new_request: bool = false
 
 var is_ready_for_new_request := true
 
@@ -30,14 +33,19 @@ func _ready() -> void:
 # Connections                                                                 #
 ###############################################################################
 
+# TODO if body is duck typed, then we can store the result in the lfu instead of
+# unmarshalling it every time
 func _on_request_completed(_result: int, response_code: int, headers: PoolStringArray,
-		body: PoolByteArray) -> void:
+		body: PoolByteArray, was_cached: bool = false) -> void:
 	if not response_code in VALID_RESPONSE_CODES:
 		print_debug("Response code %s is not a valid status code" % response_code, true)
 		if not body.empty():
 			print_debug("%s" % (body.get_string_from_utf8()))
 		emit_signal("ready_to_read", last_request_type, response_code, {})
 		return
+
+	if not was_cached:
+		main.request_lfu.add(last_request_uri, body)
 	
 	var parsed_body
 	if not body.empty():
@@ -58,6 +66,7 @@ func _on_request_completed(_result: int, response_code: int, headers: PoolString
 		parsed_body = {}
 	
 	is_ready_for_new_request = true
+	force_new_request = false
 	emit_signal("ready_to_read", last_request_type, response_code, parsed_body)
 
 ###############################################################################
@@ -71,7 +80,15 @@ func _check_error(err: int) -> void:
 func _send_request(method: int, path: String, data: String = "",
 		headers: PoolStringArray = PoolStringArray([CONTENT_TYPE, USER_AGENT, ACCEPT_ALL])) -> int:
 	is_ready_for_new_request = false
-	return request("%s%s" % [BASE_URL, path], headers, true, method, data)
+
+	if (method != HTTPClient.METHOD_POST and not force_new_request):
+		var cached_result = main.request_lfu.find(path)
+		if cached_result:
+			emit_signal("request_completed", OK, 200, [], cached_result, true)
+			return OK
+
+	last_request_uri = "%s%s" % [BASE_URL, path]
+	return request(last_request_uri, headers, true, method, data)
 
 func _construct_bearer_header() -> PoolStringArray:
 	var bearer: String = "Authorization: Bearer %s" % get_parent().token

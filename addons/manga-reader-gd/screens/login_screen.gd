@@ -57,7 +57,7 @@ func _on_login_button_pressed() -> void:
 
 func _on_dev_login() -> void:
 	main.client_pool.token = find_node("DevToken").text
-	main.change_screen_to(HOME_SCREEN_PATH)
+	main.change_screen(HOME_SCREEN_PATH)
 
 ###############################################################################
 # Private functions                                                           #
