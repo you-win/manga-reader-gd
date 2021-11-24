@@ -25,7 +25,7 @@ const LOGIN_SCREEN: PackedScene = preload("res://addons/manga-reader-gd/screens/
 class LFU:
 	const LFU_MAX: int = 50
 	
-	var lfu: Dictionary # String: PoolByteArray
+	var lfu: Dictionary # String: something
 
 	func _init() -> void:
 		lfu = {}

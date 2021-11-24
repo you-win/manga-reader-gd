@@ -33,10 +33,8 @@ func _ready() -> void:
 # Connections                                                                 #
 ###############################################################################
 
-# TODO if body is duck typed, then we can store the result in the lfu instead of
-# unmarshalling it every time
 func _on_request_completed(_result: int, response_code: int, headers: PoolStringArray,
-		body: PoolByteArray, was_cached: bool = false) -> void:
+		body, was_cached: bool = false) -> void:
 	if not response_code in VALID_RESPONSE_CODES:
 		print_debug("Response code %s is not a valid status code" % response_code, true)
 		if not body.empty():
@@ -44,26 +42,30 @@ func _on_request_completed(_result: int, response_code: int, headers: PoolString
 		emit_signal("ready_to_read", last_request_type, response_code, {})
 		return
 
-	if not was_cached:
-		main.request_lfu.add(last_request_uri, body)
-	
 	var parsed_body
-	if not body.empty():
-		if last_request_type != main.RequestType.GET_MANGA_PAGE:
-			parsed_body = {}
-			var body_string := body.get_string_from_utf8()
-			if body_string == PONG:
-				parsed_body["ping"] = body_string
-			else:
-				var parsed_json = parse_json(body_string)
-				if not typeof(parsed_json) == TYPE_DICTIONARY:
-					parsed_body["text"] = body_string
+
+	if not was_cached:
+		if not body.empty():
+			if last_request_type != main.RequestType.GET_MANGA_PAGE:
+				parsed_body = {}
+				var body_string = body.get_string_from_utf8()
+				if body_string == PONG:
+					parsed_body["ping"] = body_string
 				else:
-					parsed_body = parsed_json
+					var parsed_json = parse_json(body_string)
+					if not typeof(parsed_json) == TYPE_DICTIONARY:
+						parsed_body["text"] = body_string
+					else:
+						parsed_body = parsed_json
+				
+				main.request_lfu.add(last_request_uri, parsed_body)
+			else:
+				parsed_body = body
+				main.image_lfu.add(last_request_uri, parsed_body)
 		else:
-			parsed_body = body
+			parsed_body = {}
 	else:
-		parsed_body = {}
+		parsed_body = body
 	
 	is_ready_for_new_request = true
 	force_new_request = false
@@ -81,13 +83,14 @@ func _send_request(method: int, path: String, data: String = "",
 		headers: PoolStringArray = PoolStringArray([CONTENT_TYPE, USER_AGENT, ACCEPT_ALL])) -> int:
 	is_ready_for_new_request = false
 
-	if (method != HTTPClient.METHOD_POST and not force_new_request):
-		var cached_result = main.request_lfu.find(path)
+	last_request_uri = "%s%s" % [BASE_URL, path]
+
+	if (method != HTTPClient.METHOD_POST and not last_request_type != main.RequestType.PING and not force_new_request):
+		var cached_result = main.request_lfu.find(last_request_uri)
 		if cached_result:
 			emit_signal("request_completed", OK, 200, [], cached_result, true)
 			return OK
 
-	last_request_uri = "%s%s" % [BASE_URL, path]
 	return request(last_request_uri, headers, true, method, data)
 
 func _construct_bearer_header() -> PoolStringArray:
@@ -221,6 +224,16 @@ func get_manga_page(mdah_server: String, chapter_hash: String, chapter_page_id: 
 	headers.append("Accept-Encoding: gzip, deflate, br")
 	headers.append("Connection: keep-alive")
 	# headers.append("Host: %s:444" % mdah_server)
+
+	last_request_uri = chapter_page_id
+
+	if not force_new_request:
+		print_debug("Looking for image in lfu")
+		var cached_result = main.image_lfu.find(chapter_page_id)
+		if cached_result:
+			print_debug("Found image in lfu")
+			emit_signal("request_completed", OK, 200, [], cached_result, true)
+			return
 	
 	var err: int = request(
 		"%s%s" % [mdah_server, "/data/%s/%s" % [chapter_hash, chapter_page_id]],

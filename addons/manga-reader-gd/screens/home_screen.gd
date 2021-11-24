@@ -121,11 +121,15 @@ func _on_refresh() -> void:
 # Private functions                                                           #
 ###############################################################################
 
-func _get_data() -> void:
+func _get_data(force_refresh: bool = false) -> void:
 	var user_data_client = yield(main.client_pool.get_next_available_client(), "completed")
+	if force_refresh:
+		user_data_client.force_new_request = true
 	user_data_client.get_user_data()
 
 	var user_feed_client = yield(main.client_pool.get_next_available_client(), "completed")
+	if force_refresh:
+		user_feed_client.force_new_request = true
 	user_feed_client.get_user_feed("en", 0) # TODO hardcoded values
 
 ###############################################################################
