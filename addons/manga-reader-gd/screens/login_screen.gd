@@ -48,7 +48,7 @@ func _handle_response(request_type: int, response_status: int, response_body) ->
 				return
 			main.client_pool.token = response_body["token"]["session"]
 			main.client_pool.refresh = response_body["token"]["refresh"]
-			main.change_screen_to(HOME_SCREEN_PATH)
+			main.change_screen(HOME_SCREEN_PATH)
 
 func _on_login_button_pressed() -> void:
 	if (not _username_input.text.empty() and not _password_input.text.empty()):

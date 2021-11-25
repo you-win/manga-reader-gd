@@ -1,7 +1,7 @@
 tool
 extends "res://addons/manga-reader-gd/screens/base_screen.gd"
 
-const HOME_SCREEN_PATH: String = "res://addons/manga-reader-gd/screens/home_screen.tscn"
+const HOME_SCREEN_PATH: String = "res://addons/manga-reader-gd/screens/home-screen/home_screen.tscn"
 
 # MangaContainer
 export var scroll_container_path: NodePath
