@@ -18,6 +18,9 @@ config/icon="res://addons/manga-reader-gd/assets/icon.png"
 
 window/size/width=1600
 window/size/height=900
+window/dpi/allow_hidpi=true
+window/stretch/mode="2d"
+window/stretch/aspect="expand"
 
 [physics]
 

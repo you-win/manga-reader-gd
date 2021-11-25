@@ -40,6 +40,8 @@ var chapter_page_ids: Array
 var current_page_index: int = 0
 
 var mdah_server: String
+const MDAH_SERVER_RETRY_MAX: int = 3
+var mdah_server_retry_count: int = 0
 
 ###############################################################################
 # Builtin functions                                                           #
@@ -90,8 +92,20 @@ func _handle_response(request_type: int, response_status: int, response_body) ->
 				return
 
 			var image := Image.new()
-			if image.load_png_from_buffer(response_body) != OK:
-				print_debug("Unable to load manga page")
+			if (image.load_png_from_buffer(response_body) != OK and
+				image.load_jpg_from_buffer(response_body) != OK and
+				image.load_bmp_from_buffer(response_body) != OK and
+				image.load_tga_from_buffer(response_body) != OK and
+				image.load_webp_from_buffer(response_body) != OK):
+				print_debug("Unable to load manga page as any format")
+				if mdah_server_retry_count < MDAH_SERVER_RETRY_MAX:
+					mdah_server_retry_count += 1
+					var mdah_server_client = yield(main.client_pool.get_next_available_client(), "completed")
+					mdah_server_client.get_mdah_server(chapter_id)
+				else:
+					print("Unable to successfully load in image after %d retries, declining to start again", MDAH_SERVER_RETRY_MAX)
+				return
+			mdah_server_retry_count = 0
 			
 			var texture := ImageTexture.new()
 			texture.create_from_image(image)

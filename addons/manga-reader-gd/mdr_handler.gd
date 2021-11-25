@@ -46,7 +46,7 @@ func _on_request_completed(_result: int, response_code: int, headers: PoolString
 
 	if not was_cached:
 		if not body.empty():
-			if last_request_type != main.RequestType.GET_MANGA_PAGE:
+			if not last_request_type in [main.RequestType.GET_MANGA_PAGE, main.RequestType.PING]:
 				parsed_body = {}
 				var body_string = body.get_string_from_utf8()
 				if body_string == PONG:
@@ -85,7 +85,7 @@ func _send_request(method: int, path: String, data: String = "",
 
 	last_request_uri = "%s%s" % [BASE_URL, path]
 
-	if (method != HTTPClient.METHOD_POST and not last_request_type != main.RequestType.PING and not force_new_request):
+	if (method != HTTPClient.METHOD_POST and last_request_type != main.RequestType.PING and not force_new_request):
 		var cached_result = main.request_lfu.find(last_request_uri)
 		if cached_result:
 			emit_signal("request_completed", OK, 200, [], cached_result, true)
@@ -183,6 +183,20 @@ func get_manga(ids: Array) -> void:
 
 	var err: int = _send_request(HTTPClient.METHOD_GET, "manga?%s" % params, "", _construct_bearer_header())
 
+	_check_error(err)
+
+func search_manga(title: String) -> void:
+	print_debug("Searching for manga title")
+	last_request_type = main.RequestType.SEARCH_MANGA
+
+	if title.empty():
+		print_debug("Title is empty, cannot search")
+		return
+
+	var err: int = _send_request(HTTPClient.METHOD_GET, "manga?title=%s" % title, "", _construct_bearer_header())
+
+	_check_error(err)
+
 func view_manga(manga_id: String) -> void:
 	print_debug("Getting manga for id %s" % manga_id)
 	last_request_type = main.RequestType.VIEW_MANGA
@@ -191,6 +205,17 @@ func view_manga(manga_id: String) -> void:
 			_construct_bearer_header())
 	
 	_check_error(err)
+
+func get_manga_volumes_and_chapters(manga_id: String) -> void:
+	print_debug("Getting manga chapters for id %s" % manga_id)
+	last_request_type = main.RequestType.GET_MANGA_VOLUMES_AND_CHAPTERS
+
+	var err: int = _send_request(HTTPClient.METHOD_GET, "manga/%s/aggregate" % manga_id, "",
+			_construct_bearer_header())
+
+	_check_error(err)
+
+# Chapter
 
 func get_chapter(chapter_id: String) -> void:
 	print_debug("Getting chapter for id %s" % chapter_id)

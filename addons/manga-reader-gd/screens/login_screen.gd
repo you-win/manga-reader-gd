@@ -2,7 +2,7 @@ tool
 extends "res://addons/manga-reader-gd/screens/base_screen.gd"
 
 const SERVER_UNAVAILABLE := "Server unavailable"
-const HOME_SCREEN_PATH: String = "res://addons/manga-reader-gd/screens/home_screen.tscn"
+const HOME_SCREEN_PATH: String = "res://addons/manga-reader-gd/screens/home-screen/home_screen.tscn"
 
 export var username_input_path: NodePath
 export var password_input_path: NodePath
